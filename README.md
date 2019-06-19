@@ -40,6 +40,47 @@ module.exports = {
 
 And run `webpack` via your preferred method.
 
+## Known Problems
+
+**1. I'm experiencing slow build speed with larger projects**
+
+This is caused by [html-webpack-plugin](https://github.com/jantimon/html-webpack-plugin) that handles generation of 
+HTML files. The plugin is generating files synchronously and this makes things slow when you have a lot of template 
+files. 
+
+HtmlWebpackPlugin version 4 should fix this [issue](https://github.com/jantimon/html-webpack-plugin/issues/724), 
+but it's still in beta.
+
+**2. I'm getting `` exception`**
+
+This is probably caused by using Voog specific tags in HTML elements attributes. Voog markup conflicts with 
+HtmlWebpackPlugin. 
+
+This is not allowed: `<div class="{% unless editmode %}active{% endunless%}">Voog is fun</div>`. Instead use if/else 
+statement for the full element
+
+```html
+  {% if editmode %}
+    <div class="">Voog is fun</div>
+  {% else %}
+    <div class="active">Voog is fun</div>
+  {% endif %}
+```
+
+An alternative would be to assign class to Voog variable and use it inside the element attribute:
+
+```html
+{% if editmode %}
+  {% assign cssClass = 'active' %}
+{% else %}
+  {% assign cssClass = 'not-active' %}
+{% endif %}
+
+<div class="{{ cssClass }}}">Voog is fun</div>
+```
+
+
+
 ## License
 
 [MIT](./LICENSE)
