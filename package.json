@@ -4,9 +4,9 @@
   "description": "Develop, build and deploy your Voog application locally with WebPack - https://voog.com",
   "author": "Messente Communications Ltd <https://messente.com>",
   "homepage": "https://github.com/messente/voog-webpack-plugin#readme",
-  "main": "dist/voog-webpack-plugin.js",
+  "main": "src/voog-webpack-plugin.js",
   "files": [
-    "dist"
+    "src"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -31,6 +31,7 @@
     "md5-file": "^4.0.0",
     "mime-types": "^2.1.24",
     "path": "^0.12.7",
+    "request": "^2.88.0",
     "request-promise": "^4.2.4"
   },
   "peerDependencies": {
