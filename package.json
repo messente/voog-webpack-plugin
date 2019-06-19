@@ -26,8 +26,11 @@
     "url": "https://github.com/messente/voog-webpack-plugin/issues"
   },
   "dependencies": {
+    "crypto": "^1.0.1",
     "fs": "0.0.1-security",
     "md5-file": "^4.0.0",
+    "mime-types": "^2.1.24",
+    "path": "^0.12.7",
     "request-promise": "^4.2.4"
   },
   "peerDependencies": {
