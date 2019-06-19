@@ -1,0 +1,36 @@
+{
+  "name": "voog-webpack-plugin",
+  "version": "1.0.0",
+  "description": "Develop, build and deploy your Voog application locally with WebPack - https://voog.com",
+  "author": "Messente Communications Ltd <https://messente.com>",
+  "homepage": "https://github.com/messente/voog-webpack-plugin#readme",
+  "main": "dist/voog-webpack-plugin.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/messente/voog-webpack-plugin.git"
+  },
+  "keywords": [
+    "voog",
+    "voog.com",
+    "webpack-plugin",
+    "webpack"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/messente/voog-webpack-plugin/issues"
+  },
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "md5-file": "^4.0.0",
+    "request-promise": "^4.2.4"
+  },
+  "peerDependencies": {
+    "webpack": "^4.0.0"
+  }
+}
