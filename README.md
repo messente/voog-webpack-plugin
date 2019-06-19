@@ -122,6 +122,10 @@ An alternative would be to assign class to Voog variable and use it inside the e
 
 [MIT](./LICENSE)
 
+## Authors
+
+[Messente](https://github.com/messente/voog-webpack-plugin) - Send SMS messages and PIN codes in over 190 countries
+
 [npm]: https://img.shields.io/npm/v/voog-webpack-plugin.svg
 [npm-url]: https://www.npmjs.com/package/voog-webpack-plugin
 [size]: https://packagephobia.now.sh/badge?p=voog-webpack-plugin
