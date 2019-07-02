@@ -50,17 +50,17 @@ class VoogApi {
 
   async getLayouts() {
     const url = this.getFullEndpoint(endpoints.layouts) +
-      `&per_page=250`;
+      `?per_page=250`;
 
     const responses = [];
-    const firstPage = await request({ url, json: true, transform: returnWithHeadersTransformer }).catch(
+    const firstPage = await this.request({ url, json: true, transform: returnWithHeadersTransformer }).catch(
       (err) => console.error('ERROR: GET', url, err.statusCode,  err.message, err.error));
     const totalPages = firstPage.headers['x-total-pages'];
 
     responses.push(firstPage.data);
     for (let i = 2; i <= totalPages; i++) {
       let pageUrl = `${url}&page=${i}`;
-      responses.push(request({ url: pageUrl, json: true }).catch(
+      responses.push(this.request({ url: pageUrl, json: true }).catch(
         (err) => console.error('ERROR: GET', pageUrl, err.statusCode,  err.message, err.error)));
     }
 
@@ -71,7 +71,7 @@ class VoogApi {
   async getLayout(id) {
     const url = this.getFullEndpoint(endpoints.layouts, id);
 
-    return request({ url, json: true }).catch(
+    return this.request({ url, json: true }).catch(
       (err) => console.error('ERROR: GET', url, err.statusCode,  err.message, err.error));
   }
 
@@ -79,7 +79,7 @@ class VoogApi {
     const url = this.getFullEndpoint(endpoints.layouts, id);
 
     console.log('DEBUG: Updating layout', id, url);
-    return request.put({ url, json: { body } }).catch(
+    return this.request({ method: 'put', url, json: { body } }).catch(
       (err) => console.error('ERROR: PUT', url, err.statusCode,  err.message, err.error));
   }
 
@@ -87,24 +87,24 @@ class VoogApi {
     const url = this.getFullEndpoint(endpoints.layouts);
 
     console.log('DEBUG: Creating layout', fileName, fileType, url);
-    return request.post({ url, json: { filename: fileName, title: fileName,
+    return this.request({ method: 'post', url, json: { filename: fileName, title: fileName,
         component: fileType === 'component', body, content_type: 'page' } }).catch(
       (err) => console.error('ERROR: POST', url, err.statusCode,  err.message, err.error));
   }
 
   async getLayoutAssets() {
     const url = this.getFullEndpoint(endpoints.layoutAssets) +
-      `&per_page=250`;
+      `?per_page=250`;
 
     const responses = [];
-    const firstPage = await request({ url, json: true, transform: returnWithHeadersTransformer }).catch(
+    const firstPage = await this.request({ url, json: true, transform: returnWithHeadersTransformer }).catch(
       (err) => console.error('ERROR: GET', url, err.statusCode,  err.message, err.error));
     const totalPages = firstPage.headers['x-total-pages'];
 
     responses.push(firstPage.data);
     for (let i = 2; i <= totalPages; i++) {
       let pageUrl = `${url}&page=${i}`;
-      responses.push(request({ url: pageUrl, json: true }).catch(
+      responses.push(this.request({ url: pageUrl, json: true }).catch(
         (err) => console.error('ERROR: GET', pageUrl, err.statusCode,  err.message, err.error)));
     }
 
@@ -115,7 +115,7 @@ class VoogApi {
   async getLayoutAsset(id) {
     const url = this.getFullEndpoint(endpoints.layoutAssets, id);
 
-    return request({ url, json: true }).catch(
+    return this.request({ url, json: true }).catch(
       (err) => console.error('ERROR: GET', url, err.statusCode,  err.message, err.error));
   }
 
@@ -123,7 +123,7 @@ class VoogApi {
     const url = this.getFullEndpoint(endpoints.layoutAssets, id);
 
     console.log('DEBUG: Updating asset', id, url);
-    return request.patch({ url, json: { data } }).catch(
+    return this.request({ method: 'patch', url, json: { data } }).catch(
       (err) => console.error('ERROR: PATCH', url, err.statusCode,  err.message, err.error));
   }
 
@@ -131,7 +131,7 @@ class VoogApi {
     const url = this.getFullEndpoint(endpoints.layoutAssets, id);
 
     console.log('DEBUG: Deleting asset', id, url);
-    return request.delete({ url }).catch(
+    return this.request({ method: 'delete', url }).catch(
       (err) => console.error('ERROR: DELETE', url, err.statusCode,  err.message, err.error));
   }
 
@@ -139,7 +139,7 @@ class VoogApi {
     const url = this.getFullEndpoint(endpoints.layoutAssets);
 
     console.log('DEBUG: Creating asset', fileName, url);
-    return request.post({ url, json: { filename: fileName, data } }).catch(
+    return this.request({ method: 'post', url, json: { filename: fileName, data } }).catch(
       (err) => console.error('ERROR: POST', url, err.statusCode,  err.message, err.error));
   }
 
@@ -148,6 +148,7 @@ class VoogApi {
 
     const options = {
       url,
+      method: 'post',
       headers: {
         'Content-Type': 'multipart/form-data'
       },
@@ -159,12 +160,22 @@ class VoogApi {
     };
 
     console.log('DEBUG: Creating multipart asset', fileName, contentType, url);
-    return request.post(options).catch(
+    return this.request(options).catch(
       (err) => console.error('ERROR: POST', url, err.statusCode,  err.message, err.error));
   }
 
+  async request(options) {
+    const apiToken = {
+      headers: {
+        'X-API-TOKEN': this.token
+      }
+    };
+
+    return request({ ...options, ...apiToken });
+  }
+
   getFullEndpoint(endpoint, id) {
-    return `${this.host}/admin/api${endpoint}/${id || ''}?api_token=${this.token}`;
+    return `${this.host}/admin/api${endpoint}/${id || ''}`;
   }
 }
 
