@@ -77,8 +77,10 @@ class VoogWebpackPlugin {
   async initCacheLayouts() {
     const layouts = await this.voogApi.getLayouts();
 
-    const details = await Promise.all(layouts.map(
-      (layout) => this.voogApi.getLayout(layout.id)));
+    const details = await Promise.all(layouts
+      .filter((layout) => this.buildFiles[layout.title + '.tpl'] !== undefined)
+      .map((layout) => this.voogApi.getLayout(layout.id))
+    );
 
     details.forEach((detail) =>
       this.addToCache(detail.layout_name + '.tpl', 'layouts', detail.id, getStringMd5Sum(detail.body)
@@ -98,7 +100,9 @@ class VoogWebpackPlugin {
           this.addToCache(layoutAsset.filename, 'layout_assets', layoutAsset.id, null, false);
           return false;
         }
-      }).map((layoutAsset) => this.voogApi.getLayoutAsset(layoutAsset.id)));
+      }).filter((layoutAsset) => this.buildFiles[layoutAsset.filename] !== undefined)
+        .map((layoutAsset) => this.voogApi.getLayoutAsset(layoutAsset.id))
+    );
 
     details.forEach((detail) =>
       this.addToCache(detail.filename, 'layout_assets', detail.id, getStringMd5Sum(detail.data)
