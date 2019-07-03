@@ -23,8 +23,26 @@ function getResourceType(fileName) {
   return (fileName.search(/.tpl/i) > -1) ? 'layouts' : 'layout_assets'
 }
 
+function createChunks(arr, chunkSize) {
+  let results = [];
+
+  while (arr.length) {
+    results.push(arr.splice(0, chunkSize))
+  }
+
+  return results;
+}
+
+async function asyncForEach(array, callback) {
+  for (let index = 0; index < array.length; index++) {
+    await callback(array[index], index, array);
+  }
+}
+
 module.exports = {
   getStringMd5Sum,
   getFileType,
-  getResourceType
+  getResourceType,
+  createChunks,
+  asyncForEach
 };

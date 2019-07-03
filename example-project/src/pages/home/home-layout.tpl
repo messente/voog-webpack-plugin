@@ -11,6 +11,9 @@
 
 <h1>Home layout</h1>
 
+<!-- You can still use Voog Markup in the template -->
+<h2>{% content name="page_subtitle" single="plaintext" %}</h2>
+
 <img src="${require('@images/icon-square-big.svg')}" alt="Magic of WebPack">
 
 </body>
