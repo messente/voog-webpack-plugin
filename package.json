@@ -1,6 +1,6 @@
 {
   "name": "voog-webpack-plugin",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Develop, build and deploy your Voog application locally with WebPack - https://voog.com",
   "author": "Messente Communications Ltd <https://messente.com>",
   "homepage": "https://github.com/messente/voog-webpack-plugin#readme",
