@@ -1,7 +1,7 @@
 const fs = require('fs');
 const md5File = require('md5-file');
 const VoogApi = require('./voog-api');
-const { getStringMd5Sum, getFileType, getResourceType } = require('./helpers');
+const { getStringMd5Sum, getFileType, getResourceType, createChunks, asyncForEach } = require('./helpers');
 
 class VoogWebpackPlugin {
 
@@ -77,14 +77,21 @@ class VoogWebpackPlugin {
   async initCacheLayouts() {
     const layouts = await this.voogApi.getLayouts();
 
-    const details = await Promise.all(layouts
-      .filter((layout) => this.buildFiles[layout.title + '.tpl'] !== undefined)
-      .map((layout) => this.voogApi.getLayout(layout.id))
-    );
+    const chunks = createChunks(layouts, 10);
 
-    details.forEach((detail) =>
-      this.addToCache(detail.layout_name + '.tpl', 'layouts', detail.id, getStringMd5Sum(detail.body)
-      ));
+    await asyncForEach(chunks, async (chunk) => await Promise.all(
+      chunk
+        .filter((layout) => this.buildFiles[layout.layout_name + '.tpl'] !== undefined)
+        .map((layout) => this.voogApi.getLayout(layout.id))
+      ).then(
+      (details) => details.forEach((detail) =>
+        this.addToCache(
+          detail.layout_name + '.tpl',
+          'layouts',
+          detail.id,
+          getStringMd5Sum(detail.body))
+      ))
+    );
 
     return await Promise.resolve();
   }
@@ -92,21 +99,25 @@ class VoogWebpackPlugin {
   async initCacheLayoutAssets() {
     const layoutAssets = await this.voogApi.getLayoutAssets();
 
-    const details = await Promise.all(
-      layoutAssets.filter((layoutAsset) => {
-        if (layoutAsset.editable) {
-          return true;
-        } else {
-          this.addToCache(layoutAsset.filename, 'layout_assets', layoutAsset.id, null, false);
-          return false;
-        }
-      }).filter((layoutAsset) => this.buildFiles[layoutAsset.filename] !== undefined)
-        .map((layoutAsset) => this.voogApi.getLayoutAsset(layoutAsset.id))
-    );
+    const chunks = createChunks(layoutAssets, 10);
 
-    details.forEach((detail) =>
-      this.addToCache(detail.filename, 'layout_assets', detail.id, getStringMd5Sum(detail.data)
-      ));
+    await asyncForEach(chunks, async (chunk) => await Promise.all(
+      chunk
+        .filter((layoutAsset) => this.buildFiles[layoutAsset.filename] !== undefined)
+        .filter((layoutAsset) => {
+          if (layoutAsset.editable) {
+            return true;
+          } else {
+            this.addToCache(layoutAsset.filename, 'layout_assets', layoutAsset.id, null, false);
+            return false;
+          }
+        })
+        .map((layoutAsset) => this.voogApi.getLayoutAsset(layoutAsset.id))
+      ).then(
+      (details) => details.forEach((detail) =>
+        this.addToCache(detail.filename, 'layout_assets', detail.id, getStringMd5Sum(detail.data))
+      ))
+    );
 
     return await Promise.resolve();
   }

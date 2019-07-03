@@ -92,6 +92,14 @@ class VoogApi {
       (err) => console.error('ERROR: POST', url, err.statusCode,  err.message, err.error));
   }
 
+  async deleteLayout(id) {
+    const url = this.getFullEndpoint(endpoints.layouts, id);
+
+    console.log('DEBUG: Deleting layout', id, url);
+    return this.request({ method: 'delete', url }).catch(
+      (err) => console.error('ERROR: DELETE', url, err.statusCode,  err.message, err.error));
+  }
+
   async getLayoutAssets() {
     const url = this.getFullEndpoint(endpoints.layoutAssets) +
       `?per_page=250`;
@@ -170,7 +178,6 @@ class VoogApi {
         'X-API-TOKEN': this.token
       }
     };
-
     return request({ ...options, ...apiToken });
   }
 
