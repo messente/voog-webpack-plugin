@@ -45,6 +45,6 @@
     "lodash": ">=4.17.13"
   },
   "dependencies": {
-    "jquery": "^3.4.1"
+    "jquery": "^3.5.0"
   }
 }
