@@ -42,7 +42,7 @@
     "voog-webpack-plugin": "^1.0.0",
     "webpack": "^4.31.0",
     "webpack-cli": "^3.3.2",
-    "lodash": ">=4.17.13"
+    "lodash": ">=4.17.19"
   },
   "dependencies": {
     "jquery": "^3.5.0"
